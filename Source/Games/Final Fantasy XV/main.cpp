@@ -21,6 +21,10 @@
 #include "../../Core/core.hpp"
 #include "includes/common.hpp"
 #include "includes/sr_helpers.hpp"
+#if defined(_WIN64) && ENABLE_SAFETYHOOK && ENABLE_D3D12_INTEROP
+#define ENABLE_FFXV_FRAME_GENERATION 1
+#include "includes/frame_generation.hpp"
+#endif
 
 #if ENABLE_FAST_NOISE_TEXTURES
 static constexpr uint32_t kCoreFastNoiseTextureHash = "FAST Noise"_h;
@@ -392,6 +396,9 @@ class FinalFantasyXV final : public Game
 public:
    void OnInit(bool async) override
    {
+#if ENABLE_FFXV_FRAME_GENERATION
+      FrameGen::Register();
+#endif
 #if LUMA_HAS_RECIPE_PROVIDERS
       Patch::RegisterRecipe({
          .identity = kDitheringFixRecipe,
