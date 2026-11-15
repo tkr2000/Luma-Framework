@@ -15,6 +15,39 @@
 
 #include "..\..\Core\core.hpp"
 
+#include <cstdio>
+#include <psapi.h>
+
+// Temporary load diagnostics: the addon fails to initialize in this game (ReShade reports error 1114) while the same
+// core loads in other games, so each step of the attach writes a line next to the addon.
+namespace ACUDiag
+{
+   static wchar_t log_path[MAX_PATH] = {};
+
+   static void Init(HMODULE module)
+   {
+      if (GetModuleFileNameW(module, log_path, MAX_PATH) == 0)
+         return;
+      wchar_t* slash = wcsrchr(log_path, L'\\');
+      if (slash) *(slash + 1) = L'\0';
+      wcscat_s(log_path, L"Luma-ACU-LoadDiag.txt");
+   }
+
+   static void Log(const char* text)
+   {
+      if (log_path[0] == L'\0')
+         return;
+      FILE* file = nullptr;
+      if (_wfopen_s(&file, log_path, L"a") == 0 && file)
+      {
+         SYSTEMTIME time;
+         GetLocalTime(&time);
+         fprintf(file, "%02u:%02u:%02u.%03u [tid %lu] %s\n", time.wHour, time.wMinute, time.wSecond, time.wMilliseconds, GetCurrentThreadId(), text);
+         fclose(file);
+      }
+   }
+}
+
 struct ACUGameDeviceData final : public GameDeviceData
 {
    uint32_t draws_this_frame = 0;
@@ -31,8 +64,32 @@ class AssassinsCreedUnity final : public Game
    }
 
 public:
+   void OnLoad(std::filesystem::path& file_path, bool failed) override
+   {
+      char reshade_info[256];
+      HMODULE reshade_module = nullptr;
+      // Find the module that exports ReShade's addon registration, like "reshade::register_addon" does
+      HMODULE modules[1024];
+      DWORD needed = 0;
+      if (EnumProcessModules(GetCurrentProcess(), modules, sizeof(modules), &needed))
+      {
+         for (DWORD i = 0; i < needed / sizeof(HMODULE); i++)
+         {
+            if (GetProcAddress(modules[i], "ReShadeRegisterAddon"))
+            {
+               reshade_module = modules[i];
+               break;
+            }
+         }
+      }
+      const bool has_imgui_table = reshade_module && GetProcAddress(reshade_module, "ReShadeGetImGuiFunctionTable");
+      sprintf_s(reshade_info, "OnLoad: register_addon %s | ReShade module %p | ImGui table export %s", failed ? "FAILED" : "ok", (void*)reshade_module, has_imgui_table ? "yes" : "no");
+      ACUDiag::Log(reshade_info);
+   }
+
    void OnInit(bool async) override
    {
+      ACUDiag::Log("OnInit");
       // Keep the vanilla SDR look: the game's output and color pipeline are left as they are.
       GetShaderDefineData(POST_PROCESS_SPACE_TYPE_HASH).SetDefaultValue('0');
       GetShaderDefineData(EARLY_DISPLAY_ENCODING_HASH).SetDefaultValue('0');
@@ -92,11 +149,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 {
    if (ul_reason_for_call == DLL_PROCESS_ATTACH)
    {
+      ACUDiag::Init(hModule);
+      ACUDiag::Log("DllMain: process attach (static init done)");
+
       const char* project_name = PROJECT_NAME;
       const char* cleared_project_name = (project_name[0] == '_') ? (project_name + 1) : project_name;
 
       uint32_t mod_version = 1;
-      Globals::SetGlobals(cleared_project_name, "Assassin's Creed Unity Luma mod", nullptr, mod_version);
+      Globals::SetGlobals(cleared_project_name, "Assassin's Creed Unity Luma mod", "", mod_version);
 
       // Analysis stage: don't touch the swapchain or any texture formats.
       swapchain_format_upgrade_type = TextureFormatUpgradesType::None;
@@ -107,7 +167,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
       game = new AssassinsCreedUnity();
    }
 
-   CoreMain(hModule, ul_reason_for_call, lpReserved);
+   const BOOL core_result = CoreMain(hModule, ul_reason_for_call, lpReserved);
 
-   return TRUE;
+   if (ul_reason_for_call == DLL_PROCESS_ATTACH)
+      ACUDiag::Log(core_result ? "DllMain: CoreMain returned TRUE" : "DllMain: CoreMain returned FALSE");
+
+   return TRUE; // Same as the template (CoreMain's result isn't forwarded)
 }
