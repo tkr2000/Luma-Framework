@@ -147,6 +147,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NieR Replicant", "Source\Ga
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sunset Overdrive", "Source\Games\Sunset Overdrive\Sunset Overdrive.vcxproj", "{3A6C5692-A5DE-46AE-8E7A-1838642DDC30}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Assassins Creed Unity", "Source\Games\Assassins Creed Unity\Assassins Creed Unity.vcxproj", "{1CAC35C9-57AA-4B94-9088-B828F572DAD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Development-Debug|Win32 = Development-Debug|Win32
@@ -291,6 +293,18 @@ Global
 		{D414969A-65FC-484F-84B9-FC73CC74876B}.Test-Release|Win32.ActiveCfg = Test-Release|x64
 		{D414969A-65FC-484F-84B9-FC73CC74876B}.Test-Release|x64.ActiveCfg = Test-Release|x64
 		{D414969A-65FC-484F-84B9-FC73CC74876B}.Test-Release|x64.Build.0 = Test-Release|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Development-Debug|Win32.ActiveCfg = Development-Debug|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Development-Debug|x64.ActiveCfg = Development-Debug|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Development-Debug|x64.Build.0 = Development-Debug|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Development-Release|Win32.ActiveCfg = Development-Release|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Development-Release|x64.ActiveCfg = Development-Release|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Development-Release|x64.Build.0 = Development-Release|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Publishing-Release|Win32.ActiveCfg = Publishing-Release|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Publishing-Release|x64.ActiveCfg = Publishing-Release|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Publishing-Release|x64.Build.0 = Publishing-Release|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Test-Release|Win32.ActiveCfg = Test-Release|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Test-Release|x64.ActiveCfg = Test-Release|x64
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5}.Test-Release|x64.Build.0 = Test-Release|x64
 		{163BA26C-1EA0-EB05-F492-C8AF046A1F46}.Development-Debug|Win32.ActiveCfg = Development-Debug|x64
 		{163BA26C-1EA0-EB05-F492-C8AF046A1F46}.Development-Debug|x64.ActiveCfg = Development-Debug|x64
 		{163BA26C-1EA0-EB05-F492-C8AF046A1F46}.Development-Debug|x64.Build.0 = Development-Debug|x64
@@ -1059,6 +1073,7 @@ Global
 		{D58EB0ED-8EFA-4DB0-B2AD-B2D2A098873E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{5605BCCC-4F89-4AF3-984F-991105C32602} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{D414969A-65FC-484F-84B9-FC73CC74876B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1CAC35C9-57AA-4B94-9088-B828F572DAD5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{12A5D475-264C-35B7-7C7F-EA9C310C41BB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{F4605338-43D9-473F-AD3E-A95380C8AD56} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{9DD802E8-588E-4955-9FF8-21A0F5B06F48} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
